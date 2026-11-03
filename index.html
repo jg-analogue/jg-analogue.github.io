@@ -19,10 +19,10 @@ a{color:inherit}
 .top nav a{text-decoration:none;color:var(--dim)}
 .top nav a:hover{color:var(--fg)}
 
-.intro{display:grid;grid-template-columns:1.3fr 1fr;gap:var(--pad);align-items:center;padding:clamp(36px,7vw,100px) var(--pad)}
+.intro{display:flex;justify-content:space-between;align-items:center;gap:var(--pad);padding:clamp(28px,5vw,64px) var(--pad)}
 .intro h1{font-size:clamp(2.6rem,8vw,6rem);line-height:1;font-weight:700;letter-spacing:-.01em}
-.intro p{margin-top:1.2rem;max-width:34ch;color:var(--dim);font-size:clamp(1rem,1.6vw,1.2rem)}
-.frame{justify-self:end;width:min(100%,360px);background:#fff;padding:14px;box-shadow:0 0 18px rgba(255,255,255,.1)}
+.intro p{margin-top:1rem;max-width:34ch;color:var(--dim);font-size:clamp(1rem,1.6vw,1.2rem)}
+.frame{flex:none;width:clamp(110px,16vw,170px);background:#fff;padding:8px;box-shadow:0 0 16px rgba(255,255,255,.1)}
 .frame img{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;background:#151515}
 
 .series{padding:clamp(28px,5vw,64px) var(--pad);border-top:1px solid var(--line)}
@@ -32,6 +32,7 @@ a{color:inherit}
 .grid{columns:3 280px;column-gap:var(--gap)}
 .grid button{display:block;width:100%;margin:0 0 var(--gap);padding:0;border:0;background:#151515;cursor:zoom-in;break-inside:avoid}
 .grid img{display:block;width:100%;height:auto;min-height:120px}
+.msg{padding:var(--pad);color:var(--dim)}
 
 .contact{padding:clamp(36px,6vw,80px) var(--pad);border-top:1px solid var(--line)}
 .contact h2{font-size:clamp(1.6rem,4vw,2.8rem);margin-bottom:.8rem}
@@ -45,10 +46,6 @@ dialog img{max-width:100%;max-height:92vh;object-fit:contain}
 dialog button{position:fixed;background:none;border:0;color:#fff;font:inherit;font-size:1.05rem;padding:1rem;cursor:pointer}
 #close{top:0;right:0}#prev{left:0;top:50%}#next{right:0;top:50%}
 
-@media (max-width:700px){
-  .intro{grid-template-columns:1fr}
-  .frame{justify-self:start;width:min(70%,300px)}
-}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
@@ -64,7 +61,7 @@ dialog button{position:fixed;background:none;border:0;color:#fff;font:inherit;fo
     <h1>Photography</h1>
     <p>Event, party and film photography. Digital and analogue.</p>
   </div>
-  <div class="frame"><img src="images/cover.jpg" alt="Hands on DJ decks, black and white film" width="800" height="1200"></div>
+  <div class="frame"><img src="images/cover.jpg" alt="" width="400" height="600"></div>
 </section>
 
 <main id="main"></main>
@@ -86,56 +83,60 @@ dialog button{position:fixed;background:none;border:0;color:#fff;font:inherit;fo
 </dialog>
 
 <script>
-/* EDIT THIS: one block per series. Photos live in images/<folder>/ */
-const SERIES = [
-  { id:"trinity-hall-may-ball-2026", title:"Trinity Hall May Ball 2026", note:"Digital", folder:"trinity-hall-may-ball-2026",
-    photos:[
-      {f:"01.jpg", alt:"Describe photo 1"},
-      {f:"02.jpg", alt:"Describe photo 2"},
-      {f:"03.jpg", alt:"Describe photo 3"},
-      {f:"04.jpg", alt:"Describe photo 4"}
-    ]},
-  { id:"jesus-may-ball-2025", title:"Jesus May Ball 2025", note:"Digital", folder:"jesus-may-ball-2025",
-    photos:[
-      {f:"01.jpg", alt:"Singer kneeling on stage in front of a horn section under red lights"},
-      {f:"02.jpg", alt:"Saxophonist in a purple varsity jacket on stage"},
-      {f:"03.jpg", alt:"Dancer with silent disco headphones, hair in motion"},
-      {f:"04.jpg", alt:"Crowd wearing silent disco headphones under blue and red light"}
-    ]},
-  { id:"film", title:"Film", note:"Analogue", folder:"film",
-    photos:[
-      {f:"01.jpg", alt:"Film photograph, replace with your description"},
-      {f:"02.jpg", alt:"Film photograph, replace with your description"},
-      {f:"03.jpg", alt:"Film photograph, replace with your description"}
-    ]}
+/* EDIT THIS: one line per section, in the order you want them shown.
+   "folder" is the folder name inside images/. Photos are found automatically. */
+const SECTIONS = [
+  { title:"Trinity Hall May Ball 2026", note:"Events",   folder:"trinity-hall-may-ball-2026" },
+  { title:"Jesus May Ball 2025",        note:"Events",   folder:"jesus-may-ball-2025" },
+  { title:"Digital",                    note:"Digital",  folder:"digital" },
+  { title:"Film",                       note:"Analogue", folder:"film" }
 ];
 
 const main = document.getElementById("main"), nav = document.getElementById("nav");
 const flat = [];
 
-SERIES.forEach(s=>{
-  const a = document.createElement("a"); a.href = "#"+s.id; a.textContent = s.title; nav.append(a);
-
-  const sec = document.createElement("section"); sec.className = "series"; sec.id = s.id;
-  const head = document.createElement("header");
-  const h = document.createElement("h2"); h.textContent = s.title;
-  const n = document.createElement("p"); n.className = "note"; n.textContent = s.note;
-  head.append(h, n);
-
-  const grid = document.createElement("div"); grid.className = "grid";
-  s.photos.forEach(p=>{
-    const src = `images/${s.folder}/${p.f}`, i = flat.push({src, alt:p.alt}) - 1;
-    const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label","Open: "+p.alt);
-    const im = new Image(); im.src = src; im.alt = p.alt; im.loading = "lazy"; im.decoding = "async";
-    b.append(im); b.addEventListener("click",()=>openLb(i)); grid.append(b);
+fetch("photos.json", {cache:"no-cache"})
+  .then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
+  .then(build)
+  .catch(() => {
+    main.innerHTML = '<p class="msg">Photos will appear here once the photo list has been generated. See the setup steps.</p>';
+    addContact();
   });
-  sec.append(head, grid); main.append(sec);
-});
-const c = document.createElement("a"); c.href = "#contact"; c.textContent = "Contact"; nav.append(c);
+
+function build(manifest){
+  SECTIONS.forEach(s=>{
+    const files = manifest[s.folder] || [];
+    if(!files.length) return;
+    const id = s.folder;
+
+    const a = document.createElement("a"); a.href = "#"+id; a.textContent = s.title; nav.append(a);
+
+    const sec = document.createElement("section"); sec.className = "series"; sec.id = id;
+    const head = document.createElement("header");
+    const h = document.createElement("h2"); h.textContent = s.title;
+    head.append(h);
+    if(s.note){ const n = document.createElement("p"); n.className = "note"; n.textContent = s.note; head.append(n); }
+
+    const grid = document.createElement("div"); grid.className = "grid";
+    files.forEach((f,k)=>{
+      const src = `images/${s.folder}/${encodeURIComponent(f)}`;
+      const label = `${s.title}, photo ${k+1} of ${files.length}`;
+      const i = flat.push({src, label}) - 1;
+      const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label","Open "+label);
+      const im = new Image(); im.src = src; im.alt = ""; im.loading = "lazy"; im.decoding = "async";
+      b.append(im); b.addEventListener("click",()=>openLb(i)); grid.append(b);
+    });
+    sec.append(head, grid); main.append(sec);
+  });
+  addContact();
+}
+function addContact(){
+  const c = document.createElement("a"); c.href = "#contact"; c.textContent = "Contact"; nav.append(c);
+}
 
 const lb = document.getElementById("lb"), lbimg = document.getElementById("lbimg");
 let cur = 0;
-function show(i){ cur = (i+flat.length)%flat.length; lbimg.src = flat[cur].src; lbimg.alt = flat[cur].alt; }
+function show(i){ cur = (i+flat.length)%flat.length; lbimg.src = flat[cur].src; lbimg.alt = flat[cur].label; }
 function openLb(i){ show(i); lb.showModal(); }
 document.getElementById("close").onclick = ()=>lb.close();
 document.getElementById("prev").onclick = ()=>show(cur-1);
