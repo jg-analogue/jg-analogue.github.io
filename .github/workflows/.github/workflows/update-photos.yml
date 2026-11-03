@@ -1,1 +1,47 @@
+name: Update photo list
+
+on:
+  push:
+    branches: [main]
+    paths: ['images/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build photos.json from the folders in images/
+        run: |
+          python3 - <<'PY'
+          import os, json, re
+          exts = ('.jpg', '.jpeg', '.png', '.webp', '.avif', '.gif')
+          def key(s):
+              return [int(t) if t.isdigit() else t.lower() for t in re.split(r'(\d+)', s)]
+          out = {}
+          for d in sorted(os.listdir('images')):
+              p = os.path.join('images', d)
+              if os.path.isdir(p):
+                  out[d] = sorted([f for f in os.listdir(p) if f.lower().endswith(exts)], key=key)
+          with open('photos.json', 'w') as fh:
+              json.dump(out, fh, indent=1)
+          PY
+
+      - name: Commit photos.json
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add photos.json
+          if ! git diff --staged --quiet; then
+            git commit -m "Update photo list"
+            git push
+            gh api -X POST "/repos/${{ github.repository }}/pages/builds" || true
+          fi
 
