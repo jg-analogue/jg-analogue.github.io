@@ -6,74 +6,77 @@
 <title>Johannes Gundy – Photography</title>
 <meta name="description" content="Event, party and film photography by Johannes Gundy.">
 <style>
-:root{
-  --bg:#0b0b0b; --fg:#fff; --dim:#9a9a9a; --gap:clamp(10px,1.6vw,22px); --pad:clamp(18px,3.5vw,48px);
-}
+:root{--bg:#0b0b0b;--fg:#fff;--dim:#9a9a9a;--line:#262626;--gap:clamp(8px,1.4vw,18px);--pad:clamp(18px,4vw,56px)}
 *{box-sizing:border-box;margin:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--fg);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:700;line-height:1.2}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{background:var(--bg);color:var(--fg);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;line-height:1.35}
 a{color:inherit}
 :focus-visible{outline:2px solid #fff;outline-offset:3px}
 
-/* Cover: mirrors slide 1 */
-.cover{min-height:100svh;padding:var(--pad);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr auto;gap:var(--pad)}
-.cover h1{grid-column:1/-1;font-size:clamp(2.2rem,7vw,5rem);letter-spacing:.01em}
-.cover .name{grid-column:1/-1;margin-top:calc(var(--pad)*-.6);padding-left:clamp(0px,1.5vw,24px);font-size:clamp(1rem,2vw,1.4rem)}
-.frame{grid-column:2;grid-row:2;align-self:end;justify-self:end;width:min(100%,520px);background:#fff;padding:3.5%;box-shadow:0 0 14px rgba(255,255,255,.12)}
-.frame img{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;background:#111}
-.cover .tag{grid-column:2;text-align:right}
-.cover .tag p{font-size:clamp(1rem,2vw,1.4rem);margin-bottom:.4em}
-.cover .tag strong{display:block;font-size:clamp(2rem,6vw,4.2rem)}
-.cover nav{grid-column:1;grid-row:3;align-self:end;display:flex;flex-direction:column;gap:.5em;font-size:clamp(1rem,1.8vw,1.25rem)}
-.cover nav a{text-decoration:none;color:var(--dim);width:fit-content}
-.cover nav a:hover{color:var(--fg)}
+.top{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;padding:14px var(--pad);background:rgba(11,11,11,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .brand{font-weight:700;text-decoration:none;font-size:1.05rem}
+.top nav{display:flex;gap:1.4rem;flex-wrap:wrap;font-size:.95rem}
+.top nav a{text-decoration:none;color:var(--dim)}
+.top nav a:hover{color:var(--fg)}
 
-/* Series: mirrors slide 2 */
-.series{padding:var(--pad)}
-.grid{columns:2 320px;column-gap:var(--gap)}
-.grid button{display:block;width:100%;margin:0 0 var(--gap);padding:0;border:0;background:#141414;cursor:zoom-in;break-inside:avoid}
+.intro{display:grid;grid-template-columns:1.3fr 1fr;gap:var(--pad);align-items:center;padding:clamp(36px,7vw,100px) var(--pad)}
+.intro h1{font-size:clamp(2.6rem,8vw,6rem);line-height:1;font-weight:700;letter-spacing:-.01em}
+.intro p{margin-top:1.2rem;max-width:34ch;color:var(--dim);font-size:clamp(1rem,1.6vw,1.2rem)}
+.frame{justify-self:end;width:min(100%,360px);background:#fff;padding:14px;box-shadow:0 0 18px rgba(255,255,255,.1)}
+.frame img{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;background:#151515}
+
+.series{padding:clamp(28px,5vw,64px) var(--pad);border-top:1px solid var(--line)}
+.series header{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:clamp(16px,2.5vw,32px)}
+.series h2{font-size:clamp(1.6rem,4vw,2.8rem);font-weight:700;line-height:1.05}
+.series .note{color:var(--dim);font-size:1rem}
+.grid{columns:3 280px;column-gap:var(--gap)}
+.grid button{display:block;width:100%;margin:0 0 var(--gap);padding:0;border:0;background:#151515;cursor:zoom-in;break-inside:avoid}
 .grid img{display:block;width:100%;height:auto;min-height:120px}
-.series h2{margin-top:calc(var(--gap)*1.5);text-align:right;font-size:clamp(1.6rem,4.5vw,3rem);text-transform:uppercase}
-.series h2 span{display:block}
-.series .note{text-align:right;color:var(--dim);font-size:1rem;font-weight:400;margin-top:.4em}
 
-footer{padding:var(--pad);display:flex;flex-wrap:wrap;gap:1em 3em;justify-content:space-between;border-top:1px solid #222;font-size:1.1rem}
-footer p{font-weight:400;color:var(--dim);max-width:34ch}
+.contact{padding:clamp(36px,6vw,80px) var(--pad);border-top:1px solid var(--line)}
+.contact h2{font-size:clamp(1.6rem,4vw,2.8rem);margin-bottom:.8rem}
+.contact p{color:var(--dim);max-width:40ch;margin-bottom:1.4rem}
+.contact .links{display:flex;flex-wrap:wrap;gap:.6rem 2rem;font-size:1.15rem;font-weight:700}
 
-/* Lightbox */
 dialog{border:0;background:rgba(0,0,0,.96);color:#fff;width:100vw;height:100vh;max-width:none;max-height:none;padding:0}
 dialog::backdrop{background:#000}
 dialog .stage{height:100%;display:grid;place-items:center;padding:4vmin}
 dialog img{max-width:100%;max-height:92vh;object-fit:contain}
-dialog button{position:fixed;background:none;border:0;color:#fff;font:inherit;font-size:1.1rem;padding:1rem;cursor:pointer}
+dialog button{position:fixed;background:none;border:0;color:#fff;font:inherit;font-size:1.05rem;padding:1rem;cursor:pointer}
 #close{top:0;right:0}#prev{left:0;top:50%}#next{right:0;top:50%}
 
-@media (max-width:640px){
-  .cover{grid-template-columns:1fr}
-  .frame,.cover .tag,.cover nav{grid-column:1}
-  .frame{grid-row:auto;justify-self:center}
-  .cover nav{grid-row:auto}
+@media (max-width:700px){
+  .intro{grid-template-columns:1fr}
+  .frame{justify-self:start;width:min(70%,300px)}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
 
-<header class="cover">
-  <h1>PHOTOGRAPHY</h1>
-  <p class="name">Johannes Gundy</p>
+<div class="top">
+  <a class="brand" href="#top">Johannes Gundy</a>
+  <nav aria-label="Sections" id="nav"></nav>
+</div>
+
+<section class="intro" id="top">
+  <div>
+    <h1>Photography</h1>
+    <p>Event, party and film photography. Digital and analogue.</p>
+  </div>
   <div class="frame"><img src="images/cover.jpg" alt="Hands on DJ decks, black and white film" width="800" height="1200"></div>
-  <nav aria-label="Series" id="nav"></nav>
-  <div class="tag"><p>Digital and Analogue</p><strong>PORTFOLIO</strong></div>
-</header>
+</section>
 
 <main id="main"></main>
 
-<footer id="contact">
-  <p>Available for events, parties and balls. Get in touch for dates and rates.</p>
-  <a href="mailto:you@example.com">you@example.com</a>
-  <a href="https://instagram.com/yourhandle">Instagram</a>
-</footer>
+<section class="contact" id="contact">
+  <h2>Get in touch</h2>
+  <p>Available for balls, parties and events. Email for dates and rates.</p>
+  <div class="links">
+    <a href="mailto:jg2156@cam.ac.uk">jg2156@cam.ac.uk</a>
+    <a href="https://instagram.com/jg_analogue" target="_blank" rel="noopener">@jg_analogue</a>
+  </div>
+</section>
 
 <dialog id="lb" aria-label="Photo viewer">
   <div class="stage"><img id="lbimg" alt=""></div>
@@ -83,16 +86,23 @@ dialog button{position:fixed;background:none;border:0;color:#fff;font:inherit;fo
 </dialog>
 
 <script>
-/* EDIT THIS: one entry per series. Files live in images/<folder>/ */
+/* EDIT THIS: one block per series. Photos live in images/<folder>/ */
 const SERIES = [
-  { id:"jesus-may-ball-2025", title:["Jesus May Ball","2025"], note:"Digital", folder:"jesus-may-ball-2025",
+  { id:"trinity-hall-may-ball-2026", title:"Trinity Hall May Ball 2026", note:"Digital", folder:"trinity-hall-may-ball-2026",
+    photos:[
+      {f:"01.jpg", alt:"Describe photo 1"},
+      {f:"02.jpg", alt:"Describe photo 2"},
+      {f:"03.jpg", alt:"Describe photo 3"},
+      {f:"04.jpg", alt:"Describe photo 4"}
+    ]},
+  { id:"jesus-may-ball-2025", title:"Jesus May Ball 2025", note:"Digital", folder:"jesus-may-ball-2025",
     photos:[
       {f:"01.jpg", alt:"Singer kneeling on stage in front of a horn section under red lights"},
       {f:"02.jpg", alt:"Saxophonist in a purple varsity jacket on stage"},
       {f:"03.jpg", alt:"Dancer with silent disco headphones, hair in motion"},
       {f:"04.jpg", alt:"Crowd wearing silent disco headphones under blue and red light"}
     ]},
-  { id:"film", title:["Film"], note:"Analogue", folder:"film",
+  { id:"film", title:"Film", note:"Analogue", folder:"film",
     photos:[
       {f:"01.jpg", alt:"Film photograph, replace with your description"},
       {f:"02.jpg", alt:"Film photograph, replace with your description"},
@@ -104,26 +114,29 @@ const main = document.getElementById("main"), nav = document.getElementById("nav
 const flat = [];
 
 SERIES.forEach(s=>{
-  const a = document.createElement("a"); a.href = "#"+s.id; a.textContent = s.title.join(" "); nav.append(a);
+  const a = document.createElement("a"); a.href = "#"+s.id; a.textContent = s.title; nav.append(a);
 
   const sec = document.createElement("section"); sec.className = "series"; sec.id = s.id;
+  const head = document.createElement("header");
+  const h = document.createElement("h2"); h.textContent = s.title;
+  const n = document.createElement("p"); n.className = "note"; n.textContent = s.note;
+  head.append(h, n);
+
   const grid = document.createElement("div"); grid.className = "grid";
   s.photos.forEach(p=>{
     const src = `images/${s.folder}/${p.f}`, i = flat.push({src, alt:p.alt}) - 1;
     const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label","Open: "+p.alt);
     const im = new Image(); im.src = src; im.alt = p.alt; im.loading = "lazy"; im.decoding = "async";
-    b.append(im); b.addEventListener("click",()=>open(i)); grid.append(b);
+    b.append(im); b.addEventListener("click",()=>openLb(i)); grid.append(b);
   });
-  const h = document.createElement("h2");
-  s.title.forEach(t=>{const sp=document.createElement("span"); sp.textContent=t; h.append(sp)});
-  const n = document.createElement("p"); n.className = "note"; n.textContent = s.note;
-  sec.append(grid,h,n); main.append(sec);
+  sec.append(head, grid); main.append(sec);
 });
+const c = document.createElement("a"); c.href = "#contact"; c.textContent = "Contact"; nav.append(c);
 
 const lb = document.getElementById("lb"), lbimg = document.getElementById("lbimg");
 let cur = 0;
 function show(i){ cur = (i+flat.length)%flat.length; lbimg.src = flat[cur].src; lbimg.alt = flat[cur].alt; }
-function open(i){ show(i); lb.showModal(); }
+function openLb(i){ show(i); lb.showModal(); }
 document.getElementById("close").onclick = ()=>lb.close();
 document.getElementById("prev").onclick = ()=>show(cur-1);
 document.getElementById("next").onclick = ()=>show(cur+1);
