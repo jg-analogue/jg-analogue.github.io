@@ -95,11 +95,27 @@ const SECTIONS = [
 const main = document.getElementById("main"), nav = document.getElementById("nav");
 const flat = [];
 
-fetch("photos.json", {cache:"no-cache"})
-  .then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
+const REPO = "jg-analogue/jg-analogue.github.io", BRANCH = "main";
+const EXT = /\.(jpe?g|png|webp|avif|gif)$/i;
+const nat = (a,b) => a.localeCompare(b, undefined, {numeric:true, sensitivity:"base"});
+
+/* Lists images/<folder>/<file> straight from the repo, so dropping photos in a folder is enough */
+function fromTree(t){
+  const m = {};
+  (t.tree || []).forEach(x=>{
+    const p = x.path.split("/");
+    if(x.type==="blob" && p.length===3 && p[0]==="images" && EXT.test(p[2])) (m[p[1]] = m[p[1]] || []).push(p[2]);
+  });
+  Object.values(m).forEach(a=>a.sort(nat));
+  return m;
+}
+const getJSON = u => fetch(u).then(r => { if(!r.ok) throw new Error(r.status); return r.json(); });
+
+getJSON(`https://api.github.com/repos/${REPO}/git/trees/${BRANCH}?recursive=1`).then(fromTree)
+  .catch(() => getJSON("photos.json"))
   .then(build)
   .catch(() => {
-    main.innerHTML = '<p class="msg">Photos will appear here once the photo list has been generated. See the setup steps.</p>';
+    main.innerHTML = '<p class="msg">Photos could not be loaded right now. Please try again shortly.</p>';
     addContact();
   });
 
