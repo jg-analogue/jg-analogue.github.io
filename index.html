@@ -32,6 +32,8 @@ a{color:inherit}
 .grid{columns:3 280px;column-gap:var(--gap)}
 .grid button{display:block;width:100%;margin:0 0 var(--gap);padding:0;border:0;background:#151515;cursor:zoom-in;break-inside:avoid}
 .grid img{display:block;width:100%;height:auto;min-height:120px}
+.more{display:block;margin:clamp(8px,1.5vw,20px) auto 0;padding:.8rem 1.6rem;background:none;border:1px solid #444;color:var(--fg);font:inherit;font-weight:700;cursor:pointer}
+.more:hover{border-color:var(--fg)}
 .msg{padding:var(--pad);color:var(--dim)}
 
 .contact{padding:clamp(36px,6vw,80px) var(--pad);border-top:1px solid var(--line)}
@@ -61,7 +63,7 @@ dialog button{position:fixed;background:none;border:0;color:#fff;font:inherit;fo
     <h1>Photography</h1>
     <p>Event, party and film photography. Digital and analogue.</p>
   </div>
-  <div class="frame"><img src="images/cover.jpg" alt="" width="400" height="600"></div>
+  <div class="frame"><img src="images/cover.png" onerror="this.onerror=null;this.src='images/cover.jpg'" alt="" width="400" height="600"></div>
 </section>
 
 <main id="main"></main>
@@ -96,6 +98,7 @@ const main = document.getElementById("main"), nav = document.getElementById("nav
 const flat = [];
 
 const REPO = "jg-analogue/jg-analogue.github.io", BRANCH = "main";
+const LIMIT = 6; /* photos shown per section before "Show all" */
 const EXT = /\.(jpe?g|png|webp|avif|gif)$/i;
 const nat = (a,b) => a.localeCompare(b, undefined, {numeric:true, sensitivity:"base"});
 
@@ -140,9 +143,27 @@ function build(manifest){
       const i = flat.push({src, label}) - 1;
       const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label","Open "+label);
       const im = new Image(); im.src = src; im.alt = ""; im.loading = "lazy"; im.decoding = "async";
-      b.append(im); b.addEventListener("click",()=>openLb(i)); grid.append(b);
+      b.append(im); b.addEventListener("click",()=>openLb(i));
+      if(k >= LIMIT) b.hidden = true;
+      grid.append(b);
     });
-    sec.append(head, grid); main.append(sec);
+    sec.append(head, grid);
+    if(files.length > LIMIT){
+      const more = document.createElement("button"); more.type = "button"; more.className = "more";
+      more.setAttribute("aria-expanded","false");
+      const extra = [...grid.children].slice(LIMIT);
+      const label = () => more.textContent = more.getAttribute("aria-expanded")==="true" ? "Show fewer" : `Show all ${files.length} photos`;
+      label();
+      more.addEventListener("click",()=>{
+        const open = more.getAttribute("aria-expanded")==="true";
+        extra.forEach(el => el.hidden = open);
+        more.setAttribute("aria-expanded", String(!open));
+        label();
+        if(open) sec.scrollIntoView({block:"start"});
+      });
+      sec.append(more);
+    }
+    main.append(sec);
   });
   addContact();
 }
